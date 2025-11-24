@@ -100,15 +100,16 @@ const games = [
 
 // ===== APP DATA =====
 const apps = [
-  { name: "AI", image: "others/assets/apps/images/chippytea.png", url: "others/assets/apps/clsilk (1).html" },
+  { name: "AI", image: "others/assets/apps/images/chippytea.png", url: "others/assets/apps/ai.html" },
   { name: "EmulatorJS", image: "others/assets/apps/images/emulatorjs.png", url: "others/assets/apps/clemujs (1).html" },
-  { name: "Ruffle", image: "others/assets/apps/images/ruffle.png", url: "others/assets/apps/clruffle.html" },
-  { name: "Sandstone", image: "others/assets/apps/images/sandstone.jpg", url: "others/assets/apps/sandstone.html" },
-  { name: "Silk", image: "others/assets/apps/images/silk.jpg", url: "others/assets/apps/clsilk.html" },
+  { name: "Ruffle", image: "others/assets/apps/images/ruffle.png", url: "others/assets/apps/clruffle (1).html" },
+  { name: "Sandstone", image: "others/assets/apps/images/sandstone.jpg", url: "others/assets/apps/sandstone (1).html" },
+  { name: "Silk", image: "others/assets/apps/images/silk.jpg", url: "others/assets/apps/clsilk (1).html" },
+  { name: "Soundboard", image: "others/assets/apps/images/soundboard.png", url: "others/assets/apps/soundboard.html" },
   { name: "Soundcloud", image: "others/assets/apps/images/soundcloud.png", url: "others/assets/apps/soundcloud (1).html" },
+  { name: "Spotify (SOON)", image: "others/assets/apps/images/spotify.png", url: "about:blank"}, 
   { name: "Vscode", image: "others/assets/apps/images/vscode.jpeg", url: "others/assets/apps/vscode.html" },
-  { name: "YouTube", image: "/others/assets/apps/images/youtube.png", url: "/others/assets/apps/yt.html"},
-  { name: "Spotify (SOON)", image: "/others/assets/apps/images/spotify.png", url: "about:blank"}, 
+  { name: "YouTube", image: "others/assets/apps/images/youtube.png", url: "/others/assets/apps/yt.html"},
 ];
 
 // ===== WEBSITES DATA - GALAXYVERSE NETWORK =====

@@ -937,6 +937,7 @@ function initializeApp() {
   const websitesLink = document.getElementById('websitesLink');
   const settingsLink = document.getElementById('settingsLink');
   const aboutLink = document.getElementById('aboutLink');
+  const searchLink = document.getElementById('searchLink');
 
   if (homeLink) homeLink.addEventListener('click', (e) => { e.preventDefault(); showHome(); });
   if (gameLink) gameLink.addEventListener('click', (e) => { e.preventDefault(); showGames(); });
@@ -944,6 +945,7 @@ function initializeApp() {
   if (websitesLink) websitesLink.addEventListener('click', (e) => { e.preventDefault(); showWebsites(); });
   if (settingsLink) settingsLink.addEventListener('click', (e) => { e.preventDefault(); showSettings(); });
   if (aboutLink) aboutLink.addEventListener('click', (e) => { e.preventDefault(); showAbout(); });
+  if (searchLink) searchLink.addEventListener('click', (e) => { e.preventDefault(); showSearch(); });
 
   // Back buttons
   const backToHomeGame = document.getElementById('backToHomeGame');

@@ -25,6 +25,143 @@
 
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100..900&display=swap" rel="stylesheet" />
+  
+  <style>
+    /* Proxy Browser Styles */
+    .proxy-browser-container {
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 100px);
+      background: var(--bg-color, #0f1419);
+      border-radius: 12px;
+      overflow: hidden;
+      margin: 20px;
+    }
+
+    .proxy-header {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .proxy-nav-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: white;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.3s;
+      min-width: 40px;
+    }
+
+    .proxy-nav-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .proxy-nav-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .proxy-url-bar {
+      flex: 1;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .proxy-url-input {
+      flex: 1;
+      padding: 12px 16px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      color: white;
+      font-size: 14px;
+      outline: none;
+      transition: all 0.3s;
+    }
+
+    .proxy-url-input::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .proxy-url-input:focus {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .proxy-go-btn {
+      padding: 12px 24px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border: none;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: transform 0.2s;
+    }
+
+    .proxy-go-btn:hover {
+      transform: scale(1.05);
+    }
+
+    .proxy-iframe-container {
+      flex: 1;
+      position: relative;
+      background: #000;
+    }
+
+    .proxy-iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .loading-indicator {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-size: 18px;
+      display: none;
+      z-index: 10;
+    }
+
+    .loading-indicator.active {
+      display: block;
+    }
+
+    .proxy-welcome {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      color: white;
+      z-index: 5;
+    }
+
+    .proxy-welcome h2 {
+      font-size: 32px;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .proxy-welcome p {
+      opacity: 0.7;
+      font-size: 16px;
+    }
+  </style>
 </head>
 
 <body>
@@ -175,14 +312,40 @@
         </div>
       </div>
 
+      <!-- PROXY SEARCH SECTION - COMPLETELY REPLACED -->
       <div id="content-search" class="content" style="display:none;">
-        <h1>🔍 Search</h1>
-        <div class="search-container" style="margin: 30px auto; max-width: 600px;">
-          <input type="text" id="globalSearchInput" placeholder="Search for games, apps, or content..." style="width: 70%;" />
-          <button id="globalSearchBtn">Search</button>
-        </div>
-        <div id="search-results" class="game-grid" style="margin-top: 40px;">
-          <!-- Search results will appear here -->
+        <div class="proxy-browser-container">
+          <div class="proxy-header">
+            <button class="proxy-nav-btn" id="proxyBack" title="Back">◀</button>
+            <button class="proxy-nav-btn" id="proxyForward" title="Forward">▶</button>
+            <button class="proxy-nav-btn" id="proxyReload" title="Reload">⟳</button>
+            
+            <div class="proxy-url-bar">
+              <input 
+                type="text" 
+                class="proxy-url-input" 
+                id="proxyUrlInput" 
+                placeholder="Search with confidence..."
+              />
+              <button class="proxy-go-btn" id="proxyGoBtn">Go</button>
+            </div>
+
+            <button class="proxy-nav-btn" id="proxyFullscreen" title="Fullscreen">⛶</button>
+          </div>
+
+          <div class="proxy-iframe-container">
+            <div class="proxy-welcome" id="proxyWelcome">
+              <h2>🔍 Proxy Browser</h2>
+              <p>Enter a URL or search query to browse anonymously</p>
+            </div>
+            <div class="loading-indicator" id="loadingIndicator">Loading...</div>
+            <iframe 
+              id="proxyIframe" 
+              class="proxy-iframe"
+              sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals allow-popups-to-escape-sandbox"
+              allowfullscreen
+            ></iframe>
+          </div>
         </div>
       </div>
 
@@ -358,61 +521,143 @@
     }, 2000);
   </script>
 
-  <!-- Global search functionality -->
+  <!-- PROXY BROWSER FUNCTIONALITY -->
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const globalSearchBtn = document.getElementById('globalSearchBtn');
-      const globalSearchInput = document.getElementById('globalSearchInput');
-      const searchResults = document.getElementById('search-results');
+    (function() {
+      // ⚠️ CRITICAL: Configure your proxy URL here
+      // Replace with your actual Scramjet proxy endpoint
+      // Example: const PROXY_URL = 'https://your-domain.com/scramjet/';
+      // If running locally: const PROXY_URL = '/scramjet/';
+      const PROXY_URL = '/scramjet/'; // CHANGE THIS TO YOUR PROXY URL
+      
+      const proxyIframe = document.getElementById('proxyIframe');
+      const urlInput = document.getElementById('proxyUrlInput');
+      const goBtn = document.getElementById('proxyGoBtn');
+      const backBtn = document.getElementById('proxyBack');
+      const forwardBtn = document.getElementById('proxyForward');
+      const reloadBtn = document.getElementById('proxyReload');
+      const fullscreenBtn = document.getElementById('proxyFullscreen');
+      const loadingIndicator = document.getElementById('loadingIndicator');
+      const proxyWelcome = document.getElementById('proxyWelcome');
 
-      function performGlobalSearch() {
-        const query = globalSearchInput.value.toLowerCase().trim();
-        if (!query) {
-          searchResults.innerHTML = '<p style="color: var(--text-color); text-align: center;">Enter a search term to begin</p>';
-          return;
+      // Load URL through proxy
+      function loadProxyUrl(url) {
+        if (!url || !url.trim()) return;
+        
+        let finalUrl = url.trim();
+
+        // Hide welcome message
+        if (proxyWelcome) {
+          proxyWelcome.style.display = 'none';
         }
 
-        if (typeof games === 'undefined') {
-          searchResults.innerHTML = '<p style="color: var(--text-color); text-align: center;">Loading games data...</p>';
-          return;
+        // If not a URL, treat as search query
+        if (!finalUrl.includes('.') && !finalUrl.startsWith('http')) {
+          finalUrl = `https://duckduckgo.com/?q=${encodeURIComponent(finalUrl)}`;
         }
 
-        const results = games.filter(game => 
-          game.name.toLowerCase().includes(query) ||
-          (game.description && game.description.toLowerCase().includes(query))
-        );
-
-        if (results.length === 0) {
-          searchResults.innerHTML = '<p style="color: var(--text-color); text-align: center;">No results found</p>';
-          return;
+        // Add https if missing
+        if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://')) {
+          finalUrl = 'https://' + finalUrl;
         }
 
-        searchResults.innerHTML = results.map(game => `
-          <div class="game-card" data-game-id="${game.id}">
-            <img src="${game.image}" alt="${game.name}">
-            <h3>${game.name}</h3>
-          </div>
-        `).join('');
+        // Update URL bar
+        urlInput.value = finalUrl;
 
-        document.querySelectorAll('#search-results .game-card').forEach(card => {
-          card.addEventListener('click', function() {
-            const gameId = this.getAttribute('data-game-id');
-            if (typeof loadGame === 'function') {
-              loadGame(gameId);
-            }
-          });
-        });
+        // Show loading
+        if (loadingIndicator) {
+          loadingIndicator.classList.add('active');
+        }
+
+        // Load through Scramjet proxy
+        // The proxy will encode and handle the URL
+        const proxiedUrl = PROXY_URL + encodeURIComponent(finalUrl);
+        
+        console.log('Loading proxied URL:', proxiedUrl);
+        proxyIframe.src = proxiedUrl;
+
+        // Hide loading after iframe loads
+        proxyIframe.onload = function() {
+          if (loadingIndicator) {
+            loadingIndicator.classList.remove('active');
+          }
+        };
+
+        // Fallback: hide loading after 3 seconds
+        setTimeout(() => {
+          if (loadingIndicator) {
+            loadingIndicator.classList.remove('active');
+          }
+        }, 3000);
       }
 
-      if (globalSearchBtn && globalSearchInput) {
-        globalSearchBtn.addEventListener('click', performGlobalSearch);
-        globalSearchInput.addEventListener('keypress', (e) => {
+      // Event listeners
+      if (goBtn && urlInput) {
+        goBtn.addEventListener('click', () => {
+          const url = urlInput.value;
+          if (url) loadProxyUrl(url);
+        });
+
+        urlInput.addEventListener('keypress', (e) => {
           if (e.key === 'Enter') {
-            performGlobalSearch();
+            const url = urlInput.value;
+            if (url) loadProxyUrl(url);
           }
         });
       }
-    });
+
+      if (backBtn) {
+        backBtn.addEventListener('click', () => {
+          try {
+            proxyIframe.contentWindow.history.back();
+          } catch (e) {
+            console.log('Cannot go back:', e);
+          }
+        });
+      }
+
+      if (forwardBtn) {
+        forwardBtn.addEventListener('click', () => {
+          try {
+            proxyIframe.contentWindow.history.forward();
+          } catch (e) {
+            console.log('Cannot go forward:', e);
+          }
+        });
+      }
+
+      if (reloadBtn) {
+        reloadBtn.addEventListener('click', () => {
+          if (proxyIframe.src) {
+            proxyIframe.src = proxyIframe.src;
+          }
+        });
+      }
+
+      if (fullscreenBtn) {
+        fullscreenBtn.addEventListener('click', () => {
+          if (proxyIframe.requestFullscreen) {
+            proxyIframe.requestFullscreen();
+          } else if (proxyIframe.webkitRequestFullscreen) {
+            proxyIframe.webkitRequestFullscreen();
+          } else if (proxyIframe.msRequestFullscreen) {
+            proxyIframe.msRequestFullscreen();
+          }
+        });
+      }
+
+      // Focus input when search page is shown
+      const searchLink = document.getElementById('searchLink');
+      if (searchLink) {
+        searchLink.addEventListener('click', () => {
+          setTimeout(() => {
+            if (urlInput) urlInput.focus();
+          }, 100);
+        });
+      }
+
+      console.log('Proxy browser initialized with URL:', PROXY_URL);
+    })();
   </script>
 
   <!-- Iframe control functions -->

@@ -1,9 +1,10 @@
-<p align="center"><img src="https://github.com/aanzoski/relic/blob/main/others/assets/relic.webp?raw=true" height="150">
+<p align="center"><img src="https://github.com/aanzoski/relic/blob/main/others/assets/relic.webp?raw=true" height="180">
 
 <h1 align="center"><strong>Relic Ultimate</strong></h1>
 <p align="center">Store bought groceries</p>
 
 ### Contributors:
+- <a href="https://dsc.gg/galaxyproxi">GalaxyVerse</a> (Archived)
 - Anzo
 - <a href="https://github.com/JustJxrdanWasDefinetlyTaken">Jordan</a>
 

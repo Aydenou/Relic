@@ -3,5 +3,5 @@
 
 ### Contributors:
 - Anzo
-- <a href="https://github.com/JustJxrdanWasDefinetlyTaken"></a>Jordan
+- <a href="https://github.com/JustJxrdanWasDefinetlyTaken">Jor</a>dan
 

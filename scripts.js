@@ -31,158 +31,6 @@ function isOnAllowedDomain() {
   return ALLOWED_DOMAINS.some(domain => hostname.includes(domain.replace('www.', '')));
 }
 
-// ===== DATA MANAGEMENT SYSTEM =====
-window.DataManager = {
-  // Export all user data
-  exportData: function() {
-    try {
-      const data = {
-        version: '1.2.4',
-        exportDate: new Date().toISOString(),
-        settings: {
-          theme: localStorage.getItem('selectedTheme'),
-          tabTitle: localStorage.getItem('TabCloak_Title'),
-          tabFavicon: localStorage.getItem('TabCloak_Favicon'),
-          snowEffect: localStorage.getItem('snowEffect'),
-          hotkey: localStorage.getItem('hotkey'),
-          redirectURL: localStorage.getItem('redirectURL'),
-          aboutBlank: localStorage.getItem('aboutBlank'),
-          autoSeasonalThemes: localStorage.getItem('autoApplySeasonalThemes')
-        },
-        gameStats: {
-          favorites: JSON.parse(localStorage.getItem('gameFavorites') || '[]'),
-          playTime: JSON.parse(localStorage.getItem('gamePlayTime') || '{}'),
-          playCount: JSON.parse(localStorage.getItem('gamePlayCount') || '{}'),
-          lastPlayed: JSON.parse(localStorage.getItem('gameLastPlayed') || '{}')
-        }
-      };
-
-      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `relic-data-${new Date().toISOString().split('T')[0]}.json`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-
-      console.log('✅ Data exported successfully');
-      alert('Data exported successfully!');
-    } catch (error) {
-      console.error('❌ Error exporting data:', error);
-      alert('Error exporting data. Check console for details.');
-    }
-  },
-
-  // Import user data
-  importData: function(file) {
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      try {
-        const data = JSON.parse(e.target.result);
-
-        // Validate data structure
-        if (!data.version || !data.settings) {
-          throw new Error('Invalid data format');
-        }
-
-        // Import settings
-        if (data.settings.theme) localStorage.setItem('selectedTheme', data.settings.theme);
-        if (data.settings.tabTitle) localStorage.setItem('TabCloak_Title', data.settings.tabTitle);
-        if (data.settings.tabFavicon) localStorage.setItem('TabCloak_Favicon', data.settings.tabFavicon);
-        if (data.settings.snowEffect) localStorage.setItem('snowEffect', data.settings.snowEffect);
-        if (data.settings.hotkey) localStorage.setItem('hotkey', data.settings.hotkey);
-        if (data.settings.redirectURL) localStorage.setItem('redirectURL', data.settings.redirectURL);
-        if (data.settings.aboutBlank) localStorage.setItem('aboutBlank', data.settings.aboutBlank);
-        if (data.settings.autoSeasonalThemes) localStorage.setItem('autoApplySeasonalThemes', data.settings.autoSeasonalThemes);
-
-        // Import game stats
-        if (data.gameStats) {
-          if (data.gameStats.favorites) localStorage.setItem('gameFavorites', JSON.stringify(data.gameStats.favorites));
-          if (data.gameStats.playTime) localStorage.setItem('gamePlayTime', JSON.stringify(data.gameStats.playTime));
-          if (data.gameStats.playCount) localStorage.setItem('gamePlayCount', JSON.stringify(data.gameStats.playCount));
-          if (data.gameStats.lastPlayed) localStorage.setItem('gameLastPlayed', JSON.stringify(data.gameStats.lastPlayed));
-        }
-
-        console.log('✅ Data imported successfully');
-        alert('Data imported successfully! Refreshing page...');
-        location.reload();
-      } catch (error) {
-        console.error('❌ Error importing data:', error);
-        alert('Error importing data. Please ensure the file is valid.');
-      }
-    };
-    reader.readAsText(file);
-  },
-
-  // Clear all data
-  clearAllData: function() {
-    const confirmed = confirm('⚠️ Are you sure you want to clear ALL data? This cannot be undone!\n\nThis will reset:\n- Theme settings\n- Tab cloaking\n- Game favorites\n- Play statistics\n- All preferences');
-    
-    if (!confirmed) return;
-
-    const doubleConfirm = confirm('🚨 FINAL WARNING: All your data will be permanently deleted. Continue?');
-    
-    if (!doubleConfirm) return;
-
-    try {
-      // Clear all localStorage
-      localStorage.clear();
-      
-      console.log('✅ All data cleared');
-      alert('All data has been cleared. Page will refresh.');
-      location.reload();
-    } catch (error) {
-      console.error('❌ Error clearing data:', error);
-      alert('Error clearing data. Check console for details.');
-    }
-  },
-
-  // Update statistics display
-  updateStats: function() {
-    const statsContainer = document.getElementById('data-stats');
-    if (!statsContainer) return;
-
-    try {
-      const favorites = JSON.parse(localStorage.getItem('gameFavorites') || '[]');
-      const playTime = JSON.parse(localStorage.getItem('gamePlayTime') || '{}');
-      const playCount = JSON.parse(localStorage.getItem('gamePlayCount') || '{}');
-      
-      const totalGamesPlayed = Object.keys(playCount).length;
-      const totalPlayTime = Object.values(playTime).reduce((sum, time) => sum + time, 0);
-      const totalSessions = Object.values(playCount).reduce((sum, count) => sum + count, 0);
-      
-      const hours = Math.floor(totalPlayTime / 3600);
-      const minutes = Math.floor((totalPlayTime % 3600) / 60);
-
-      statsContainer.innerHTML = `
-        <div class="data-stat">
-          <div class="data-stat-label">Favorite Games</div>
-          <div class="data-stat-value">${favorites.length}</div>
-        </div>
-        <div class="data-stat">
-          <div class="data-stat-label">Games Played</div>
-          <div class="data-stat-value">${totalGamesPlayed}</div>
-        </div>
-        <div class="data-stat">
-          <div class="data-stat-label">Total Play Time</div>
-          <div class="data-stat-value">${hours}h ${minutes}m</div>
-        </div>
-        <div class="data-stat">
-          <div class="data-stat-label">Total Sessions</div>
-          <div class="data-stat-value">${totalSessions}</div>
-        </div>
-      `;
-    } catch (error) {
-      console.error('❌ Error updating stats:', error);
-      statsContainer.innerHTML = '<p style="color: var(--text-muted);">Error loading statistics</p>';
-    }
-  }
-};
-
 // ===== SEASONAL THEME SYSTEM (BUILT-IN) =====
 function getSeasonalTheme() {
   const now = new Date();
@@ -204,13 +52,13 @@ function getSeasonalTheme() {
   // Spring: March 20 - June 20
   if (month > 1 && month < 5 || (month === 1 && day >= 20) || (month === 5 && day <= 20)) {
     console.log('🌸 Spring season detected!');
-    return 'ocean';
+    return 'ocean'; // Fresh, light theme for spring
   }
   
   // Summer: June 21 - September 22
   if (month > 5 && month < 8 || (month === 5 && day >= 21) || (month === 8 && day <= 22)) {
     console.log('☀️ Summer season detected!');
-    return 'light';
+    return 'light'; // Bright theme for summer
   }
   
   console.log('✨ Default modern theme');
@@ -266,24 +114,7 @@ const presets = {
 
 // ===== THEME CONFIGURATIONS =====
 const themes = {
-  original: {
-    bgColor: '#0f1419',
-    bgSecondary: '#1a1f2e',
-    navColor: '#1a1b4b',
-    accentColor: '#7c3aed',
-    accentSecondary: '#a78bfa',
-    accentTertiary: '#4f46e5',
-    textColor: '#f8fafc',
-    textMuted: '#94a3b8',
-    borderColor: '#334155',
-    hoverBg: '#2e3a58',
-    btnBg: '#334155',
-    btnHoverBg: '#4f46e5',
-    glassBg: 'rgba(30, 41, 59, 0.8)',
-    glassBorder: 'rgba(124, 58, 237, 0.25)',
-    shadowGlow: '0 0 25px rgba(124, 58, 237, 0.4)'
-  },
-  
+  // Modern Dark Theme (Default)
   modern: { 
     bgColor: '#0f172a', 
     bgSecondary: '#1e293b',
@@ -302,42 +133,7 @@ const themes = {
     shadowGlow: '0 0 25px rgba(124, 58, 237, 0.4)'
   },
   
-  dark: {
-    bgColor: '#0a0a0a',
-    bgSecondary: '#1a1a1a',
-    navColor: '#1a1a1a',
-    accentColor: '#ffffff',
-    accentSecondary: '#cccccc',
-    accentTertiary: '#888888',
-    textColor: '#ffffff',
-    textMuted: '#888888',
-    borderColor: '#333333',
-    hoverBg: '#2a2a2a',
-    btnBg: '#333333',
-    btnHoverBg: '#444444',
-    glassBg: 'rgba(26, 26, 26, 0.8)',
-    glassBorder: 'rgba(255, 255, 255, 0.1)',
-    shadowGlow: '0 0 25px rgba(255, 255, 255, 0.1)'
-  },
-  
-  light: { 
-    bgColor: '#f8fafc',
-    bgSecondary: '#e2e8f0',
-    navColor: '#ffffff', 
-    accentColor: '#4f46e5',
-    accentSecondary: '#7c73e6',
-    accentTertiary: '#3b3bff',
-    textColor: '#1e293b',
-    textMuted: '#64748b',
-    borderColor: '#cbd5e1',
-    hoverBg: '#e2e8f0',
-    btnBg: '#e2e8f0',
-    btnHoverBg: '#4f46e5',
-    glassBg: 'rgba(255, 255, 255, 0.8)',
-    glassBorder: 'rgba(203, 213, 225, 0.5)',
-    shadowGlow: '0 0 15px rgba(99, 102, 241, 0.2)'
-  },
-  
+  // Seasonal Themes
   halloween: { 
     bgColor: '#1a0a0a',
     bgSecondary: '#2a1a1a',
@@ -374,6 +170,7 @@ const themes = {
     shadowGlow: '0 0 25px rgba(230, 57, 70, 0.4)'
   },
   
+  // Additional Theme Options
   midnight: { 
     bgColor: '#0f0f23',
     bgSecondary: '#1a1a2e',
@@ -410,166 +207,23 @@ const themes = {
     shadowGlow: '0 0 25px rgba(0, 212, 255, 0.4)'
   },
   
-  sunset: {
-    bgColor: '#1a0f0a',
-    bgSecondary: '#2a1f1a',
-    navColor: '#2a1a0f',
-    accentColor: '#ff6b35',
-    accentSecondary: '#ff9e4f',
-    accentTertiary: '#f77f00',
-    textColor: '#ffe5d9',
-    textMuted: '#d4a59a',
-    borderColor: '#4a2f1a',
-    hoverBg: '#3a2a1f',
-    btnBg: '#4a3f2a',
-    btnHoverBg: '#ff6b35',
-    glassBg: 'rgba(42, 31, 26, 0.8)',
-    glassBorder: 'rgba(255, 107, 53, 0.25)',
-    shadowGlow: '0 0 25px rgba(255, 107, 53, 0.4)'
-  },
-  
-  forest: {
-    bgColor: '#0a1a0f',
-    bgSecondary: '#1a2a1f',
-    navColor: '#1a2a1f',
-    accentColor: '#4caf50',
-    accentSecondary: '#81c784',
-    accentTertiary: '#2e7d32',
-    textColor: '#e8f5e9',
-    textMuted: '#a5d6a7',
-    borderColor: '#2a4a2f',
-    hoverBg: '#2a3a2f',
-    btnBg: '#2a4a3a',
-    btnHoverBg: '#4caf50',
-    glassBg: 'rgba(26, 42, 31, 0.8)',
-    glassBorder: 'rgba(76, 175, 80, 0.25)',
-    shadowGlow: '0 0 25px rgba(76, 175, 80, 0.4)'
-  },
-  
-  purple: {
-    bgColor: '#1a0f2e',
-    bgSecondary: '#2a1f3e',
-    navColor: '#2a1a3e',
-    accentColor: '#9c27b0',
-    accentSecondary: '#ba68c8',
-    accentTertiary: '#7b1fa2',
-    textColor: '#f3e5f5',
-    textMuted: '#ce93d8',
-    borderColor: '#4a2f5e',
-    hoverBg: '#3a2a4e',
-    btnBg: '#4a3a5e',
-    btnHoverBg: '#9c27b0',
-    glassBg: 'rgba(42, 31, 62, 0.8)',
-    glassBorder: 'rgba(156, 39, 176, 0.25)',
-    shadowGlow: '0 0 25px rgba(156, 39, 176, 0.4)'
-  },
-  
-  cyberpunk: {
-    bgColor: '#0a0a1a',
-    bgSecondary: '#1a1a2a',
-    navColor: '#1a1a3a',
-    accentColor: '#00ffff',
-    accentSecondary: '#ff00ff',
-    accentTertiary: '#ffff00',
-    textColor: '#00ffff',
-    textMuted: '#8899aa',
-    borderColor: '#2a2a4a',
-    hoverBg: '#2a2a3a',
-    btnBg: '#3a3a5a',
-    btnHoverBg: '#00ffff',
-    glassBg: 'rgba(26, 26, 42, 0.8)',
-    glassBorder: 'rgba(0, 255, 255, 0.25)',
-    shadowGlow: '0 0 25px rgba(0, 255, 255, 0.6)'
-  },
-  
-  matrix: {
-    bgColor: '#000000',
-    bgSecondary: '#0a0a0a',
-    navColor: '#0a1a0a',
-    accentColor: '#00ff00',
-    accentSecondary: '#00dd00',
-    accentTertiary: '#00aa00',
-    textColor: '#00ff00',
-    textMuted: '#008800',
-    borderColor: '#002200',
-    hoverBg: '#001a00',
-    btnBg: '#002200',
-    btnHoverBg: '#00ff00',
-    glassBg: 'rgba(10, 26, 10, 0.8)',
-    glassBorder: 'rgba(0, 255, 0, 0.25)',
-    shadowGlow: '0 0 25px rgba(0, 255, 0, 0.6)'
-  },
-  
-  neon: {
-    bgColor: '#0f0a1a',
-    bgSecondary: '#1a0f2a',
-    navColor: '#1a0f2a',
-    accentColor: '#ff1493',
-    accentSecondary: '#00ffff',
-    accentTertiary: '#ffff00',
-    textColor: '#ffffff',
-    textMuted: '#aa88cc',
-    borderColor: '#2a1f3a',
-    hoverBg: '#2a1f3a',
-    btnBg: '#3a2f4a',
-    btnHoverBg: '#ff1493',
-    glassBg: 'rgba(26, 15, 42, 0.8)',
-    glassBorder: 'rgba(255, 20, 147, 0.25)',
-    shadowGlow: '0 0 25px rgba(255, 20, 147, 0.6)'
-  },
-  
-  fire: {
-    bgColor: '#1a0a00',
-    bgSecondary: '#2a1a0a',
-    navColor: '#2a1a0a',
-    accentColor: '#ff4500',
-    accentSecondary: '#ff6347',
-    accentTertiary: '#dc143c',
-    textColor: '#ffe4b5',
-    textMuted: '#d2691e',
-    borderColor: '#3a2a1a',
-    hoverBg: '#3a2a1a',
-    btnBg: '#4a3a2a',
-    btnHoverBg: '#ff4500',
-    glassBg: 'rgba(42, 26, 10, 0.8)',
-    glassBorder: 'rgba(255, 69, 0, 0.25)',
-    shadowGlow: '0 0 25px rgba(255, 69, 0, 0.6)'
-  },
-  
-  ice: {
-    bgColor: '#0a1a2a',
-    bgSecondary: '#1a2a3a',
-    navColor: '#1a2a3a',
-    accentColor: '#00bfff',
-    accentSecondary: '#87ceeb',
-    accentTertiary: '#4682b4',
-    textColor: '#e0ffff',
-    textMuted: '#b0e0e6',
-    borderColor: '#2a3a4a',
-    hoverBg: '#2a3a4a',
-    btnBg: '#3a4a5a',
-    btnHoverBg: '#00bfff',
-    glassBg: 'rgba(26, 42, 58, 0.8)',
-    glassBorder: 'rgba(0, 191, 255, 0.25)',
-    shadowGlow: '0 0 25px rgba(0, 191, 255, 0.4)'
-  },
-  
-  retro: {
-    bgColor: '#2a2a1a',
-    bgSecondary: '#3a3a2a',
-    navColor: '#3a3a2a',
-    accentColor: '#ffaa00',
-    accentSecondary: '#ff8800',
-    accentTertiary: '#ff6600',
-    textColor: '#ffffcc',
-    textMuted: '#cccc99',
-    borderColor: '#4a4a3a',
-    hoverBg: '#4a4a3a',
-    btnBg: '#5a5a4a',
-    btnHoverBg: '#ffaa00',
-    glassBg: 'rgba(58, 58, 42, 0.8)',
-    glassBorder: 'rgba(255, 170, 0, 0.25)',
-    shadowGlow: '0 0 25px rgba(255, 170, 0, 0.4)'
+  // Light Theme Variant
+  light: { 
+    bgColor: '#f8fafc',
+    bgSecondary: '#e2e8f0',
+    navColor: '#ffffff', 
+    accentColor: '#4f46e5',
+    accentSecondary: '#7c73e6',
+    accentTertiary: '#3b3bff',
+    textColor: '#1e293b',
+    textMuted: '#64748b',
+    borderColor: '#cbd5e1',
+    hoverBg: '#e2e8f0',
+    btnBg: '#e2e8f0',
+    btnHoverBg: '#4f46e5',
+    glassBg: 'rgba(255, 255, 255, 0.8)',
+    glassBorder: 'rgba(203, 213, 225, 0.5)',
+    shadowGlow: '0 0 15px rgba(99, 102, 241, 0.2)'
   }
 };
 
@@ -642,32 +296,43 @@ function applyTabCloaking(title, favicon) {
 
 // ===== THEME SYSTEM =====
 function applyTheme(themeName) {
-  const theme = themes[themeName] || themes.original;
+  const theme = themes[themeName] || themes.modern; // Fallback to modern theme
   console.log('🎨 Applying theme:', themeName);
   
-  const root = document.documentElement;
-  root.style.setProperty('--bg-color', theme.bgColor);
-  root.style.setProperty('--bg-secondary', theme.bgSecondary || theme.bgColor);
-  root.style.setProperty('--nav-color', theme.navColor);
-  root.style.setProperty('--accent-color', theme.accentColor);
-  root.style.setProperty('--accent-secondary', theme.accentSecondary || theme.accentColor);
-  root.style.setProperty('--accent-tertiary', theme.accentTertiary || theme.accentColor);
-  root.style.setProperty('--text-color', theme.textColor);
-  root.style.setProperty('--text-muted', theme.textMuted || theme.textColor + 'b3');
-  root.style.setProperty('--border-color', theme.borderColor);
-  root.style.setProperty('--hover-bg', theme.hoverBg);
-  root.style.setProperty('--btn-bg', theme.btnBg);
-  root.style.setProperty('--btn-hover-bg', theme.btnHoverBg || theme.accentColor);
-  root.style.setProperty('--glass-bg', theme.glassBg || theme.navColor + 'cc');
-  root.style.setProperty('--glass-border', theme.glassBorder || theme.accentColor + '40');
-  root.style.setProperty('--shadow-glow', theme.shadowGlow || `0 0 25px ${theme.accentColor}66`);
+  // Apply CSS variables
+  document.documentElement.style.setProperty('--bg-color', theme.bgColor);
+  document.documentElement.style.setProperty('--bg-secondary', theme.bgSecondary || theme.bgColor);
+  document.documentElement.style.setProperty('--nav-color', theme.navColor);
+  document.documentElement.style.setProperty('--accent-color', theme.accentColor);
+  document.documentElement.style.setProperty('--accent-secondary', theme.accentSecondary || theme.accentColor);
+  document.documentElement.style.setProperty('--accent-tertiary', theme.accentTertiary || theme.accentColor);
+  document.documentElement.style.setProperty('--text-color', theme.textColor);
+  document.documentElement.style.setProperty('--text-muted', theme.textMuted || theme.textColor + 'b3');
+  document.documentElement.style.setProperty('--border-color', theme.borderColor);
+  document.documentElement.style.setProperty('--hover-bg', theme.hoverBg);
+  document.documentElement.style.setProperty('--btn-bg', theme.btnBg);
+  document.documentElement.style.setProperty('--btn-hover-bg', theme.btnHoverBg || theme.accentColor);
+  document.documentElement.style.setProperty('--glass-bg', theme.glassBg || theme.navColor + 'cc');
+  document.documentElement.style.setProperty('--glass-border', theme.glassBorder || theme.accentColor + '40');
+  document.documentElement.style.setProperty('--shadow-glow', theme.shadowGlow || `0 0 25px ${theme.accentColor}66`);
   
+  // Update meta theme color for mobile browsers
   const metaThemeColor = document.querySelector('meta[name="theme-color"]');
   if (metaThemeColor) {
     metaThemeColor.setAttribute('content', theme.bgColor);
   }
   
+  // Save theme preference
   localStorage.setItem('selectedTheme', themeName);
+  const root = document.documentElement;
+  root.style.setProperty('--bg-color', theme.bgColor);
+  root.style.setProperty('--nav-color', theme.navColor);
+  root.style.setProperty('--accent-color', theme.accentColor);
+  root.style.setProperty('--text-color', theme.textColor);
+  root.style.setProperty('--border-color', theme.borderColor);
+  root.style.setProperty('--hover-bg', theme.hoverBg);
+  root.style.setProperty('--btn-bg', theme.btnBg);
+  root.style.setProperty('--btn-hover-bg', theme.btnHoverBg);
 }
 
 // ===== LOAD SETTINGS =====
@@ -795,7 +460,7 @@ function debounce(func, delay = 300) {
 
 function hideAll() {
   document.querySelectorAll('.content').forEach(c => (c.style.display = 'none'));
-  document.querySelectorAll('.sidebar-link').forEach(link => link.classList.remove('active'));
+  document.querySelectorAll('.navbar li a').forEach(link => link.classList.remove('active'));
   const infoButtons = document.querySelector('.homepage-info-buttons');
   if (infoButtons) infoButtons.style.display = 'none';
 }
@@ -878,20 +543,32 @@ function showApps() {
   }
 }
 
+function showWebsites() {
+  hideAll();
+  const websitesContent = document.getElementById('content-websites');
+  if (websitesContent) websitesContent.style.display = 'block';
+  const websitesLink = document.getElementById('websitesLink');
+  if (websitesLink) websitesLink.classList.add('active');
+  
+  if (typeof websites !== 'undefined' && Array.isArray(websites)) {
+    renderWebsites(websites);
+  }
+}
+
+function showAbout() {
+  hideAll();
+  const aboutContent = document.getElementById('content-about');
+  if (aboutContent) aboutContent.style.display = 'block';
+  const aboutLink = document.getElementById('aboutLink');
+  if (aboutLink) aboutLink.classList.add('active');
+}
+
 function showSettings() {
   hideAll();
   const settingsContent = document.getElementById('content-settings');
   if (settingsContent) settingsContent.style.display = 'block';
   const settingsLink = document.getElementById('settingsLink');
   if (settingsLink) settingsLink.classList.add('active');
-}
-
-function showSearch() {
-  hideAll();
-  const searchContent = document.getElementById('content-search');
-  if (searchContent) searchContent.style.display = 'block';
-  const searchLink = document.getElementById('searchLink');
-  if (searchLink) searchLink.classList.add('active');
 }
 
 // ===== RENDER FUNCTIONS =====
@@ -948,6 +625,54 @@ function renderApps(appsToRender) {
     card.onclick = () => loadGame(app.url);
     appList.appendChild(card);
   });
+}
+
+function renderWebsites(websitesToRender) {
+  const websitesList = document.getElementById('websites-list');
+  if (!websitesList) return;
+  
+  websitesList.innerHTML = '';
+  
+  if (!websitesToRender || websitesToRender.length === 0) {
+    websitesList.innerHTML = '<p>No websites found.</p>';
+    return;
+  }
+  
+  const list = document.createElement('ul');
+  list.style.cssText = 'list-style: none; padding: 20px; max-width: 800px; margin: 0 auto;';
+  
+  websitesToRender.forEach(website => {
+    if (!website || !website.name || !website.url) return;
+    
+    const listItem = document.createElement('li');
+    listItem.style.cssText = 'padding: 15px; margin-bottom: 10px; background: var(--nav-color); border: 1px solid var(--border-color); border-radius: 8px; transition: all 0.3s ease;';
+    
+    listItem.innerHTML = `
+      <a href="${website.url}" target="_blank" style="color: var(--accent-color); text-decoration: none; font-size: 18px; display: flex; align-items: center; gap: 10px;">
+        <span>🔗</span>
+        <div>
+          <div style="font-weight: 600;">${website.name}</div>
+          <div style="font-size: 14px; color: var(--text-color); opacity: 0.7; margin-top: 4px;">${website.url}</div>
+        </div>
+      </a>
+    `;
+    
+    listItem.addEventListener('mouseenter', function() {
+      this.style.background = 'var(--hover-bg)';
+      this.style.borderColor = 'var(--accent-color)';
+      this.style.transform = 'translateX(5px)';
+    });
+    
+    listItem.addEventListener('mouseleave', function() {
+      this.style.background = 'var(--nav-color)';
+      this.style.borderColor = 'var(--border-color)';
+      this.style.transform = 'translateX(0)';
+    });
+    
+    list.appendChild(listItem);
+  });
+  
+  websitesList.appendChild(list);
 }
 
 function loadGame(url) {
@@ -1025,6 +750,26 @@ function searchGames() {
   renderGames(filtered);
 }
 
+function searchWebsites() {
+  const searchInput = document.getElementById('websitesSearchInput');
+  if (!searchInput) return;
+  
+  const query = searchInput.value.toLowerCase().trim();
+  
+  if (typeof websites === 'undefined' || !Array.isArray(websites)) {
+    console.error('❌ websites array not found');
+    return;
+  }
+  
+  if (!query) {
+    renderWebsites(websites);
+    return;
+  }
+  
+  const filtered = websites.filter(site => site && site.name && site.name.toLowerCase().includes(query));
+  renderWebsites(filtered);
+}
+
 function toggleFullscreen() {
   const gameIframe = document.getElementById('game-iframe');
   if (!gameIframe) return;
@@ -1052,7 +797,7 @@ if (document.readyState === 'loading') {
 
 function initializeApp() {
   try {
-    console.log('🚀 Initializing Relic...');
+    console.log('🚀 Initializing GalaxyVerse...');
     console.log('✅ Free access enabled - No authentication required');
     console.log('📊 Console Status:', {
       available: !!window.GVerseConsole,
@@ -1061,212 +806,213 @@ function initializeApp() {
       logCount: window.GVerseConsole?.logs?.length || 0
     });
   
-    loadSettings();
-    showHome();
-    setupPanicButton();
+  loadSettings();
+  showHome();
+  setupPanicButton();
 
-    // Theme selector
-    const themeSelect = document.getElementById('themeSelect');
-    if (themeSelect) {
-      const savedTheme = localStorage.getItem('selectedTheme');
-      if (savedTheme) {
-        themeSelect.value = savedTheme;
-      } else if (shouldAutoApplySeasonalTheme()) {
-        themeSelect.value = getSeasonalTheme();
-      } else {
-        themeSelect.value = 'original';
-      }
-      
-      themeSelect.addEventListener('change', (e) => {
-        const theme = e.target.value;
-        applyTheme(theme);
-        localStorage.setItem('selectedTheme', theme);
-        console.log('🎨 Theme manually selected:', theme);
-      });
+  const themeSelect = document.getElementById('themeSelect');
+  if (themeSelect) {
+    const savedTheme = localStorage.getItem('selectedTheme');
+    if (savedTheme) {
+      themeSelect.value = savedTheme;
+    } else if (shouldAutoApplySeasonalTheme()) {
+      themeSelect.value = getSeasonalTheme();
+    } else {
+      themeSelect.value = 'original';
     }
-
-    // Modal handlers
-    const creditsBtn = document.getElementById('creditsBtn');
-    const updateLogBtn = document.getElementById('updateLogBtn');
-    const creditsModal = document.getElementById('creditsModal');
-    const updateLogModal = document.getElementById('updateLogModal');
-
-    if (creditsBtn && creditsModal) {
-      creditsBtn.addEventListener('click', () => {
-        creditsModal.style.display = 'block';
-      });
-    }
-
-    if (updateLogBtn && updateLogModal) {
-      updateLogBtn.addEventListener('click', () => {
-        updateLogModal.style.display = 'block';
-      });
-    }
-
-    document.querySelectorAll('.info-close').forEach(closeBtn => {
-      closeBtn.addEventListener('click', function() {
-        const modalId = this.getAttribute('data-modal');
-        const modalElement = document.getElementById(modalId);
-        if (modalElement) {
-          modalElement.style.display = 'none';
-        }
-      });
+    
+    themeSelect.addEventListener('change', (e) => {
+      const theme = e.target.value;
+      applyTheme(theme);
+      localStorage.setItem('selectedTheme', theme);
+      console.log('🎨 Theme manually selected:', theme);
     });
+  }
 
-    window.onclick = (e) => {
-      if (e.target.classList.contains('info-modal')) {
-        e.target.style.display = 'none';
+  const creditsBtn = document.getElementById('creditsBtn');
+  const updateLogBtn = document.getElementById('updateLogBtn');
+  const creditsModal = document.getElementById('creditsModal');
+  const updateLogModal = document.getElementById('updateLogModal');
+
+  if (creditsBtn && creditsModal) {
+    creditsBtn.addEventListener('click', () => {
+      creditsModal.style.display = 'block';
+    });
+  }
+
+  if (updateLogBtn && updateLogModal) {
+    updateLogBtn.addEventListener('click', () => {
+      updateLogModal.style.display = 'block';
+    });
+  }
+
+  document.querySelectorAll('.info-close').forEach(closeBtn => {
+    closeBtn.addEventListener('click', function() {
+      const modalId = this.getAttribute('data-modal');
+      const modalElement = document.getElementById(modalId);
+      if (modalElement) {
+        modalElement.style.display = 'none';
       }
-    };
+    });
+  });
 
-    // Tab cloaking
-    const applyBtn = document.getElementById('applyBtn');
-    if (applyBtn) {
-      applyBtn.addEventListener('click', () => {
+  window.onclick = (e) => {
+    if (e.target.classList.contains('info-modal')) {
+      e.target.style.display = 'none';
+    }
+  };
+
+  const applyBtn = document.getElementById('applyBtn');
+  if (applyBtn) {
+    applyBtn.addEventListener('click', () => {
+      const titleInput = document.getElementById('customTitle');
+      const faviconInput = document.getElementById('customFavicon');
+      const title = titleInput ? titleInput.value.trim() : '';
+      const favicon = faviconInput ? faviconInput.value.trim() : '';
+      applyTabCloaking(title, favicon);
+      alert('Tab cloaking applied!');
+    });
+  }
+
+  const resetBtn = document.getElementById('resetBtn');
+  if (resetBtn) {
+    resetBtn.addEventListener('click', () => {
+      localStorage.removeItem('TabCloak_Title');
+      localStorage.removeItem('TabCloak_Favicon');
+      document.title = 'GalaxyVerse';
+      const link = document.querySelector("link[rel~='icon']");
+      if (link) link.href = '';
+      const titleInput = document.getElementById('customTitle');
+      const faviconInput = document.getElementById('customFavicon');
+      if (titleInput) titleInput.value = '';
+      if (faviconInput) faviconInput.value = '';
+      const presetSelect = document.getElementById('presetSelect');
+      if (presetSelect) presetSelect.value = '';
+      alert('Tab cloaking reset!');
+    });
+  }
+
+  const presetSelect = document.getElementById('presetSelect');
+  if (presetSelect) {
+    presetSelect.addEventListener('change', (e) => {
+      const selected = presets[e.target.value];
+      if (selected) {
         const titleInput = document.getElementById('customTitle');
         const faviconInput = document.getElementById('customFavicon');
-        const title = titleInput ? titleInput.value.trim() : '';
-        const favicon = faviconInput ? faviconInput.value.trim() : '';
-        applyTabCloaking(title, favicon);
-        alert('Tab cloaking applied!');
-      });
-    }
+        if (titleInput) titleInput.value = selected.title;
+        if (faviconInput) faviconInput.value = selected.favicon;
+        applyTabCloaking(selected.title, selected.favicon);
+      }
+    });
+  }
 
-    const resetBtn = document.getElementById('resetBtn');
-    if (resetBtn) {
-      resetBtn.addEventListener('click', () => {
-        localStorage.removeItem('TabCloak_Title');
-        localStorage.removeItem('TabCloak_Favicon');
-        document.title = 'Relic';
-        const link = document.querySelector("link[rel~='icon']");
-        if (link) link.href = 'others/assets/relic.webp';
-        const titleInput = document.getElementById('customTitle');
-        const faviconInput = document.getElementById('customFavicon');
-        if (titleInput) titleInput.value = '';
-        if (faviconInput) faviconInput.value = '';
-        const presetSelect = document.getElementById('presetSelect');
-        if (presetSelect) presetSelect.value = '';
-        alert('Tab cloaking reset!');
-      });
-    }
+  const snowToggle = document.getElementById('snowToggle');
+  if (snowToggle) {
+    snowToggle.addEventListener('change', (e) => {
+      if (e.target.checked) {
+        localStorage.setItem('snowEffect', 'enabled');
+        startSnow();
+      } else {
+        localStorage.setItem('snowEffect', 'disabled');
+        stopSnow();
+      }
+    });
+  }
 
-    const presetSelect = document.getElementById('presetSelect');
-    if (presetSelect) {
-      presetSelect.addEventListener('change', (e) => {
-        const selected = presets[e.target.value];
-        if (selected) {
-          const titleInput = document.getElementById('customTitle');
-          const faviconInput = document.getElementById('customFavicon');
-          if (titleInput) titleInput.value = selected.title;
-          if (faviconInput) faviconInput.value = selected.favicon;
-          applyTabCloaking(selected.title, selected.favicon);
-        }
-      });
-    }
+  const aboutBlankToggle = document.getElementById('aboutBlankToggle');
+  if (aboutBlankToggle) {
+    aboutBlankToggle.addEventListener('change', (e) => {
+      if (e.target.checked) {
+        localStorage.setItem('aboutBlank', 'enabled');
+      } else {
+        localStorage.removeItem('aboutBlank');
+      }
+    });
+  }
 
-    // Snow toggle
-    const snowToggle = document.getElementById('snowToggle');
-    if (snowToggle) {
-      snowToggle.addEventListener('change', (e) => {
-        if (e.target.checked) {
-          localStorage.setItem('snowEffect', 'enabled');
-          startSnow();
-        } else {
-          localStorage.setItem('snowEffect', 'disabled');
-          stopSnow();
-        }
-      });
-    }
+  // Navigation
+  const homeLink = document.getElementById('homeLink');
+  const gameLink = document.getElementById('gameLink');
+  const appsLink = document.getElementById('appsLink');
+  const websitesLink = document.getElementById('websitesLink');
+  const settingsLink = document.getElementById('settingsLink');
+  const aboutLink = document.getElementById('aboutLink');
+  const searchLink = document.getElementById('searchLink');
 
-    // About:blank toggle
-    const aboutBlankToggle = document.getElementById('aboutBlankToggle');
-    if (aboutBlankToggle) {
-      aboutBlankToggle.addEventListener('change', (e) => {
-        if (e.target.checked) {
-          localStorage.setItem('aboutBlank', 'enabled');
-        } else {
-          localStorage.removeItem('aboutBlank');
-        }
-      });
-    }
+  if (homeLink) homeLink.addEventListener('click', (e) => { e.preventDefault(); showHome(); });
+  if (gameLink) gameLink.addEventListener('click', (e) => { e.preventDefault(); showGames(); });
+  if (appsLink) appsLink.addEventListener('click', (e) => { e.preventDefault(); showApps(); });
+  if (websitesLink) websitesLink.addEventListener('click', (e) => { e.preventDefault(); showWebsites(); });
+  if (settingsLink) settingsLink.addEventListener('click', (e) => { e.preventDefault(); showSettings(); });
+  if (aboutLink) aboutLink.addEventListener('click', (e) => { e.preventDefault(); showAbout(); });
+  if (searchLink) searchLink.addEventListener('click', (e) => { e.preventDefault(); showSearch(); });
 
-    // Data management buttons
-    const exportBtn = document.getElementById('export-data-btn');
-    if (exportBtn) {
-      exportBtn.addEventListener('click', () => {
-        window.DataManager.exportData();
-      });
-    }
+  // Back buttons
+  const backToHomeGame = document.getElementById('backToHomeGame');
+  const backToHomeApps = document.getElementById('backToHomeApps');
+  const backToHomeWebsites = document.getElementById('backToHomeWebsites');
+  
+  if (backToHomeGame) {
+    backToHomeGame.addEventListener('click', () => {
+      if (window.GameStats) {
+        window.GameStats.stopTracking();
+      }
+      showHome();
+    });
+  }
+  
+  if (backToHomeApps) {
+    backToHomeApps.addEventListener('click', () => showHome());
+  }
+  
+  if (backToHomeWebsites) {
+    backToHomeWebsites.addEventListener('click', () => showHome());
+  }
 
-    const importBtn = document.getElementById('import-data-btn');
-    const importFile = document.getElementById('import-file');
-    if (importBtn && importFile) {
-      importBtn.addEventListener('click', () => {
-        importFile.click();
-      });
-      
-      importFile.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (file) {
-          window.DataManager.importData(file);
-        }
-      });
-    }
+  // Search
+  const searchBtn = document.getElementById('searchBtn');
+  const searchInput = document.getElementById('searchInput');
+  
+  if (searchBtn) {
+    searchBtn.addEventListener('click', searchGames);
+  }
+  
+  if (searchInput) {
+    searchInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') searchGames();
+    });
+    searchInput.addEventListener('input', debounce(searchGames, 300));
+  }
 
-    const clearBtn = document.getElementById('clear-data-btn');
-    if (clearBtn) {
-      clearBtn.addEventListener('click', () => {
-        window.DataManager.clearAllData();
-      });
-    }
+  // Websites search
+  const websitesSearchBtn = document.getElementById('websitesSearchBtn');
+  const websitesSearchInput = document.getElementById('websitesSearchInput');
+  
+  if (websitesSearchBtn) {
+    websitesSearchBtn.addEventListener('click', searchWebsites);
+  }
+  
+  if (websitesSearchInput) {
+    websitesSearchInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') searchWebsites();
+    });
+    websitesSearchInput.addEventListener('input', debounce(searchWebsites, 300));
+  }
 
-    // Back buttons
-    const backToHomeGame = document.getElementById('backToHomeGame');
-    const backToHomeApps = document.getElementById('backToHomeApps');
-    
-    if (backToHomeGame) {
-      backToHomeGame.addEventListener('click', () => {
-        if (window.GameStats) {
-          window.GameStats.stopTracking();
-        }
-        showHome();
-      });
-    }
-    
-    if (backToHomeApps) {
-      backToHomeApps.addEventListener('click', () => showHome());
-    }
+  // Fullscreen
+  const fullscreenBtn = document.getElementById('fullscreenBtn');
+  if (fullscreenBtn) {
+    fullscreenBtn.addEventListener('click', toggleFullscreen);
+  }
 
-    // Search functionality
-    const searchBtn = document.getElementById('searchBtn');
-    const searchInput = document.getElementById('searchInput');
-    
-    if (searchBtn) {
-      searchBtn.addEventListener('click', searchGames);
-    }
-    
-    if (searchInput) {
-      searchInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') searchGames();
-      });
-      searchInput.addEventListener('input', debounce(searchGames, 300));
-    }
-
-    // Fullscreen button
-    const fullscreenBtn = document.getElementById('fullscreenBtn');
-    if (fullscreenBtn) {
-      fullscreenBtn.addEventListener('click', toggleFullscreen);
-    }
-
-    console.log('✅ Relic initialized successfully');
-    console.log('📊 Console active - Press Ctrl+Shift+K to toggle');
-    console.log('🎮 All features unlocked - No authentication required');
-    console.log('✨ Enjoy free access to all games, apps, and websites!');
-    
+  console.log('✅ GalaxyVerse initialized successfully');
+  console.log('📊 Console active - Press Ctrl+Shift+K to toggle');
+  console.log('🎮 All features unlocked - No authentication required');
+  console.log('✨ Enjoy free access to all games, apps, and websites!');
+  
   } catch (error) {
     console.error('❌ Critical error during initialization:', error);
     alert('An error occurred during initialization. Check console.');
   }
 }
-
-/* UPDATE VERSION: V1.2.4 - Full Data Management Integration */
+/* UPDATE THIS EVERTIME IT IS CHANGED EX: UPD 1 */

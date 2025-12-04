@@ -312,8 +312,8 @@
         </div>
       </div>
 
-      <!-- PROXY SEARCH SECTION - COMPLETELY REPLACED -->
-      <div id="content-search" class="content" style="display:none;">
+      <!-- PROXY SEARCH SECTION -->
+      <div id="content-srch" class="content" style="display:none;">
         <div class="proxy-browser-container">
           <div class="proxy-header">
             <button class="proxy-nav-btn" id="proxyBack" title="Back">◀</button>
@@ -663,7 +663,7 @@
   <!-- Iframe control functions -->
   <script>
     function reload() {
-      var iframe = document.querySelector("iframe");
+      const iframe = document.querySelector("iframe");
       if (iframe) {
         try {
           iframe.contentWindow.location.reload(true);
@@ -677,7 +677,7 @@
     }
 
     function historyBack() {
-      var iframe = document.querySelector("iframe");
+      const iframe = document.querySelector("iframe");
       if (iframe) {
         try {
           iframe.contentWindow.history.back();
@@ -688,7 +688,7 @@
     }
 
     function historyForward() {
-      var iframe = document.querySelector("iframe");
+      const iframe = document.querySelector("iframe");
       if (iframe) {
         try {
           iframe.contentWindow.history.forward();

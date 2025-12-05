@@ -165,6 +165,20 @@ const games = [
   { name: "Zombie Rush", image: "others/assets/games/images/you-vs-100-skibidi-toilets-cover.avif", url: "others/assets/games/zombierush.html" }
 ];
 
+// ===== EMULATED GAMES DATA =====
+const emulatedGames = [
+  { name: "Super Mario Bros", image: "others/assets/Emulated/images/supermario.jpg", url: "others/assets/Emulated/supermario.html" },
+  { name: "Sonic The Hedgehog", image: "others/assets/Emulated/images/sonic.jpg", url: "others/assets/Emulated/sonic.html" },
+  { name: "Pokemon FireRed", image: "others/assets/Emulated/images/pokemonfirered.jpg", url: "others/assets/Emulated/pokemonfirered.html" },
+  { name: "Legend of Zelda", image: "others/assets/Emulated/images/zelda.jpg", url: "others/assets/Emulated/zelda.html" },
+  { name: "Kirby's Adventure", image: "others/assets/Emulated/images/kirby.jpg", url: "others/assets/Emulated/kirby.html" },
+  { name: "Mega Man", image: "others/assets/Emulated/images/megaman.jpg", url: "others/assets/Emulated/megaman.html" },
+  { name: "Donkey Kong", image: "others/assets/Emulated/images/donkeykong.jpg", url: "others/assets/Emulated/donkeykong.html" },
+  { name: "Metroid", image: "others/assets/Emulated/images/metroid.jpg", url: "others/assets/Emulated/metroid.html" },
+  { name: "Pac-Man", image: "others/assets/Emulated/images/pacman.jpg", url: "others/assets/Emulated/pacman.html" },
+  { name: "Street Fighter II", image: "others/assets/Emulated/images/streetfighter.jpg", url: "others/assets/Emulated/streetfighter.html" }
+];
+
 // ===== APP DATA =====
 const apps = [
   { name: "AI", image: "others/assets/apps/images/chippytea.png", url: "others/assets/apps/ai.html" },
@@ -244,6 +258,19 @@ function searchGamesData(query) {
 }
 
 /**
+ * Search emulated games by query string
+ * @param {string} query - Search query
+ * @returns {Array} Filtered emulated games array
+ */
+function searchEmulatedGamesData(query) {
+  if (!query || query.trim() === '') {
+    return emulatedGames;
+  }
+  const searchTerm = query.toLowerCase().trim();
+  return emulatedGames.filter(game => game.name.toLowerCase().includes(searchTerm));
+}
+
+/**
  * Search apps by query string
  * @param {string} query - Search query
  * @returns {Array} Filtered apps array
@@ -279,11 +306,27 @@ function getRandomGame() {
 }
 
 /**
+ * Get a random emulated game
+ * @returns {Object} Random emulated game object
+ */
+function getRandomEmulatedGame() {
+  return emulatedGames[Math.floor(Math.random() * emulatedGames.length)];
+}
+
+/**
  * Get total count of games (excluding Feedback)
  * @returns {number} Total playable games
  */
 function getTotalGamesCount() {
   return games.filter(game => game.name !== "Feedback").length;
+}
+
+/**
+ * Get total count of emulated games
+ * @returns {number} Total emulated games
+ */
+function getTotalEmulatedGamesCount() {
+  return emulatedGames.length;
 }
 
 /**
@@ -306,14 +349,18 @@ function getTotalWebsitesCount() {
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     games,
+    emulatedGames,
     apps,
     websites,
     getGameOfTheDay,
     searchGamesData,
+    searchEmulatedGamesData,
     searchAppsData,
     searchWebsitesData,
     getRandomGame,
+    getRandomEmulatedGame,
     getTotalGamesCount,
+    getTotalEmulatedGamesCount,
     getTotalAppsCount,
     getTotalWebsitesCount
   };

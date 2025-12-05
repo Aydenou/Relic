@@ -2,7 +2,7 @@
 
 .carousel-wrapper {
   width: 100%;
-  margin: 40px 0;
+  margin: 60px 0;
   overflow: hidden;
   position: relative;
 }
@@ -131,16 +131,7 @@
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
 }
 
-/* Enhanced Scroll Animations */
-@keyframes scrollLeftToRight {
-  0% {
-    transform: translateX(-50%);
-  }
-  100% {
-    transform: translateX(0%);
-  }
-}
-
+/* Enhanced Scroll Animation */
 @keyframes scrollRightToLeft {
   0% {
     transform: translateX(0%);
@@ -148,10 +139,6 @@
   100% {
     transform: translateX(-50%);
   }
-}
-
-.scroll-left-to-right {
-  animation: scrollLeftToRight 45s linear infinite;
 }
 
 .scroll-right-to-left {
@@ -287,7 +274,6 @@
     font-size: 16px;
   }
 
-  .scroll-left-to-right,
   .scroll-right-to-left {
     animation-duration: 35s;
   }
@@ -326,7 +312,6 @@
     font-size: 14px;
   }
   
-  .scroll-left-to-right,
   .scroll-right-to-left {
     animation-duration: 30s;
   }
@@ -343,7 +328,6 @@
 
 /* Reduced Motion */
 @media (prefers-reduced-motion: reduce) {
-  .scroll-left-to-right,
   .scroll-right-to-left {
     animation: none;
   }

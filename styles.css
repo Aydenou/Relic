@@ -852,36 +852,39 @@ body::before {
   box-shadow: var(--shadow-lg), var(--shadow-glow);
 }
 
-/* Game Play Area */
+/* Game Play Area - MADE BIGGER */
 .game-play-area {
   background: #000;
-  border: 2px solid var(--accent-color);
-  border-radius: 20px;
-  padding: 12px;
+  border: 3px solid var(--accent-color);
+  border-radius: 24px;
+  padding: 16px;
   position: relative;
   box-shadow: var(--shadow-lg), var(--shadow-glow);
+  max-width: 95%;
+  margin: 0 auto;
 }
 
 .game-iframe {
   width: 100%;
-  height: 600px;
+  height: 85vh; /* Increased from 600px to 85% of viewport height */
+  min-height: 700px; /* Minimum height to ensure it's always big enough */
   border: none;
-  border-radius: 12px;
+  border-radius: 16px;
 }
 
 .fullscreen-btn {
   position: absolute;
-  top: 20px;
-  right: 20px;
+  top: 28px;
+  right: 28px;
   background: linear-gradient(135deg, var(--accent-color), var(--accent-secondary));
   color: #fff;
   border: none;
   border-radius: 12px;
-  padding: 10px 20px;
+  padding: 12px 24px;
   cursor: pointer;
   z-index: 10000;
   font-weight: 700;
-  font-size: 14px;
+  font-size: 15px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: var(--shadow-md);
 }
@@ -900,10 +903,4 @@ body::before {
 
 .admin-subsection h4 {
   margin-bottom: 16px;
-  background: linear-gradient(135deg, var(--accent-color), var(--accent-secondary));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  font-size: 20px;
-  font-weight: 700;
-}
+  background: linear-gradient(135deg, var

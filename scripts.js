@@ -721,3 +721,168 @@ function initializeApp() {
         creditsModal.style.display = 'block';
       });
     }
+
+    if (updateLogBtn && updateLogModal) {
+      updateLogBtn.addEventListener('click', () => {
+        updateLogModal.style.display = 'block';
+      });
+    }
+
+    document.querySelectorAll('.info-close').forEach(closeBtn => {
+      closeBtn.addEventListener('click', function() {
+        const modalId = this.getAttribute('data-modal');
+        const modalElement = document.getElementById(modalId);
+        if (modalElement) {
+          modalElement.style.display = 'none';
+        }
+      });
+    });
+
+    window.onclick = (e) => {
+      if (e.target.classList.contains('info-modal')) {
+        e.target.style.display = 'none';
+      }
+    };
+
+    const applyBtn = document.getElementById('applyBtn');
+    if (applyBtn) {
+      applyBtn.addEventListener('click', () => {
+        const titleInput = document.getElementById('customTitle');
+        const faviconInput = document.getElementById('customFavicon');
+        const title = titleInput ? titleInput.value.trim() : '';
+        const favicon = faviconInput ? faviconInput.value.trim() : '';
+        applyTabCloaking(title, favicon);
+        alert('Tab cloaking applied!');
+      });
+    }
+
+    const resetBtn = document.getElementById('resetBtn');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        localStorage.removeItem('TabCloak_Title');
+        localStorage.removeItem('TabCloak_Favicon');
+        document.title = 'Relic';
+        const link = document.querySelector("link[rel~='icon']");
+        if (link) link.href = '';
+        const titleInput = document.getElementById('customTitle');
+        const faviconInput = document.getElementById('customFavicon');
+        if (titleInput) titleInput.value = '';
+        if (faviconInput) faviconInput.value = '';
+        const presetSelect = document.getElementById('presetSelect');
+        if (presetSelect) presetSelect.value = '';
+        alert('Tab cloaking reset!');
+      });
+    }
+
+    const presetSelect = document.getElementById('presetSelect');
+    if (presetSelect) {
+      presetSelect.addEventListener('change', (e) => {
+        const selected = presets[e.target.value];
+        if (selected) {
+          const titleInput = document.getElementById('customTitle');
+          const faviconInput = document.getElementById('customFavicon');
+          if (titleInput) titleInput.value = selected.title;
+          if (faviconInput) faviconInput.value = selected.favicon;
+          applyTabCloaking(selected.title, selected.favicon);
+        }
+      });
+    }
+
+    const snowToggle = document.getElementById('snowToggle');
+    if (snowToggle) {
+      snowToggle.addEventListener('change', (e) => {
+        if (e.target.checked) {
+          localStorage.setItem('snowEffect', 'enabled');
+          startSnow();
+        } else {
+          localStorage.setItem('snowEffect', 'disabled');
+          stopSnow();
+        }
+      });
+    }
+
+    const aboutBlankToggle = document.getElementById('aboutBlankToggle');
+    if (aboutBlankToggle) {
+      aboutBlankToggle.addEventListener('change', (e) => {
+        if (e.target.checked) {
+          localStorage.setItem('aboutBlank', 'enabled');
+        } else {
+          localStorage.removeItem('aboutBlank');
+        }
+      });
+    }
+
+    const homeLink = document.getElementById('homeLink');
+    const gameLink = document.getElementById('gameLink');
+    const appsLink = document.getElementById('appsLink');
+    const websitesLink = document.getElementById('websitesLink');
+    const settingsLink = document.getElementById('settingsLink');
+    const aboutLink = document.getElementById('aboutLink');
+    const searchLink = document.getElementById('searchLink');
+
+    if (homeLink) homeLink.addEventListener('click', (e) => { e.preventDefault(); showHome(); });
+    if (gameLink) gameLink.addEventListener('click', (e) => { e.preventDefault(); showGames(); });
+    if (appsLink) appsLink.addEventListener('click', (e) => { e.preventDefault(); showApps(); });
+    if (websitesLink) websitesLink.addEventListener('click', (e) => { e.preventDefault(); showWebsites(); });
+    if (settingsLink) settingsLink.addEventListener('click', (e) => { e.preventDefault(); showSettings(); });
+    if (aboutLink) aboutLink.addEventListener('click', (e) => { e.preventDefault(); showAbout(); });
+    if (searchLink) searchLink.addEventListener('click', (e) => { e.preventDefault(); showSearch(); });
+
+    const backToHomeGame = document.getElementById('backToHomeGame');
+    const backToHomeApps = document.getElementById('backToHomeApps');
+    const backToHomeWebsites = document.getElementById('backToHomeWebsites');
+    
+    if (backToHomeGame) {
+      backToHomeGame.addEventListener('click', () => {
+        if (window.GameStats) {
+          window.GameStats.stopTracking();
+        }
+        showHome();
+      });
+    }
+    
+    if (backToHomeApps) {
+      backToHomeApps.addEventListener('click', () => showHome());
+    }
+    
+    if (backToHomeWebsites) {
+      backToHomeWebsites.addEventListener('click', () => showHome());
+    }
+
+    const searchBtn = document.getElementById('searchBtn');
+    const searchInput = document.getElementById('searchInput');
+    
+    if (searchBtn) {
+      searchBtn.addEventListener('click', searchGames);
+    }
+    
+    if (searchInput) {
+      searchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') searchGames();
+      });
+      searchInput.addEventListener('input', debounce(searchGames, 300));
+    }
+
+    const websitesSearchBtn = document.getElementById('websitesSearchBtn');
+    const websitesSearchInput = document.getElementById('websitesSearchInput');
+    
+    if (websitesSearchBtn) {
+      websitesSearchBtn.addEventListener('click', searchWebsites);
+    }
+    
+    if (websitesSearchInput) {
+      websitesSearchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') searchWebsites();
+      });
+      websitesSearchInput.addEventListener('input', debounce(searchWebsites, 300));
+    }
+
+    const fullscreenBtn = document.getElementById('fullscreenBtn');
+    if (fullscreenBtn) {
+      fullscreenBtn.addEventListener('click', toggleFullscreen);
+    }
+  } catch (error) {
+    console.error('Critical error during initialization:', error);
+    alert('An error occurred during initialization. Check console.');
+  }
+}

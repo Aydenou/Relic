@@ -165,7 +165,7 @@ const games = [
   { name: "Zombie Rush", image: "others/assets/games/images/you-vs-100-skibidi-toilets-cover.avif", url: "others/assets/games/zombierush.html" }
 ];
 
-// ===== EMULATED GAMES DATA =====
+//EMULATED GAMES 
 const emulatedGames = [
   { name: "Super Mario Bros", image: "others/assets/Emulated/images/supermario.jpg", url: "others/assets/Emulated/supermario.html" },
   { name: "Sonic The Hedgehog", image: "others/assets/Emulated/images/sonic.jpg", url: "others/assets/Emulated/sonic.html" },
@@ -179,7 +179,7 @@ const emulatedGames = [
   { name: "Street Fighter II", image: "others/assets/Emulated/images/streetfighter.jpg", url: "others/assets/Emulated/streetfighter.html" }
 ];
 
-// ===== APP DATA =====
+//APP DATA
 const apps = [
   { name: "AI", image: "others/assets/apps/images/chippytea.png", url: "others/assets/apps/ai.html" },
   { name: "EmulatorJS", image: "others/assets/apps/images/emulatorjs.png", url: "others/assets/apps/clemujs (1).html" },
@@ -193,7 +193,7 @@ const apps = [
   { name: "YouTube", image: "others/assets/apps/images/youtube.png", url: "/others/assets/apps/yt.html"},
 ];
 
-// ===== WEBSITES DATA - GALAXYVERSE NETWORK =====
+// SCRAP
 const websites = [
   {
     name: "GalaxyVerse Main",

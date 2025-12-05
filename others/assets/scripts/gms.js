@@ -69,7 +69,7 @@ const games = [
   { name: "Geometry Dash Subzero", image: "others/assets/games/images/gdashsubzero.png", url: "others/assets/games/gd subzero.html" },
   { name: "Gold Miner", image: "others/assets/games/images/Gold Miner.png", url: "others/assets/games/gold miner.html" },
   { name: "Google Baseball", image: "others/assets/games/images/baseball.png", url: "others/assets/games/Google Baseball.html" },
-  { name: "Google Dino", image: "others/assets/games/images/Google dino.jpeg", url: "others/assets/games/Google Baseball.html" },
+  { name: "Google Dino", image: "others/assets/games/images/Google dino.jpeg", url: "others/assets/games/googledino.html" },
   { name: "Google Feud", image: "others/assets/games/images/googlefeud.jpg", url: "others/assets/games/Google Feud.html" },
   { name: "Granny", image: "others/assets/games/images/granny.png", url: "others/assets/games/Granny.html" },
   { name: "Grow a Garden", image: "others/assets/games/images/grow a garden.png", url: "others/assets/games/growagarden.html" },

@@ -1,4 +1,4 @@
-// THIS ONE MIGHT BE SCRAPPED ANZO!!!!
+// ANZO THIS ISNT SCAPPED USE THIS ==== UPD 12/5/25
 (function() {
   'use strict';
 
@@ -15,6 +15,8 @@
     const contentMap = {
       'home': 'content-home',
       'games': 'content-gms',
+      'emulated': 'content-emulated',
+      'search': 'content-srch',
       'apps': 'content-aps',
       'settings': 'content-settings'
     };
@@ -35,6 +37,13 @@
           const contentElement = document.getElementById(contentId);
           if (contentElement) {
             contentElement.style.display = 'block';
+            
+            // Load emulated games when emulated page is shown
+            if (page === 'emulated') {
+              setTimeout(() => {
+                loadEmulatedGames();
+              }, 100);
+            }
           }
         }
 
@@ -49,6 +58,7 @@
     });
 
     restoreActivePage();
+    setupEmulatedGamesSearch();
   }
 
   function hideAllContent() {
@@ -76,6 +86,85 @@
       }
     } catch (e) {
       console.warn('Could not restore active page:', e);
+    }
+  }
+
+  function loadEmulatedGames(searchQuery = '') {
+    const emulatedList = document.getElementById('emulated-list');
+    if (!emulatedList) return;
+
+    if (typeof emulatedGames === 'undefined') {
+      console.error('emulatedGames data not loaded');
+      emulatedList.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 40px;">Emulated games data not available</p>';
+      return;
+    }
+
+    const gamesToDisplay = searchQuery 
+      ? searchEmulatedGamesData(searchQuery) 
+      : emulatedGames;
+
+    if (gamesToDisplay.length === 0) {
+      emulatedList.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 40px;">No emulated games found</p>';
+      return;
+    }
+
+    emulatedList.innerHTML = '';
+
+    gamesToDisplay.forEach(game => {
+      const gameCard = document.createElement('div');
+      gameCard.className = 'game-card';
+      gameCard.innerHTML = `
+        <img src="${game.image}" alt="${game.name}" onerror="this.src='others/assets/placeholder.png'">
+        <h3>${game.name}</h3>
+      `;
+
+      gameCard.addEventListener('click', function() {
+        loadGameInIframe(game);
+      });
+
+      emulatedList.appendChild(gameCard);
+    });
+  }
+
+  function setupEmulatedGamesSearch() {
+    const searchInput = document.getElementById('searchEmulatedInput');
+    const searchBtn = document.getElementById('searchEmulatedBtn');
+
+    if (searchInput && searchBtn) {
+      searchBtn.addEventListener('click', function() {
+        const query = searchInput.value.trim();
+        loadEmulatedGames(query);
+      });
+
+      searchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          const query = searchInput.value.trim();
+          loadEmulatedGames(query);
+        }
+      });
+
+      searchInput.addEventListener('input', function() {
+        if (this.value.trim() === '') {
+          loadEmulatedGames();
+        }
+      });
+    }
+  }
+
+  function loadGameInIframe(game) {
+    const gameDisplay = document.getElementById('game-display');
+    const gameIframe = document.getElementById('game-iframe');
+    
+    if (gameDisplay && gameIframe) {
+      hideAllContent();
+      gameDisplay.style.display = 'block';
+      gameIframe.src = game.url;
+      
+      try {
+        sessionStorage.setItem('currentGame', JSON.stringify(game));
+      } catch (e) {
+        console.warn('Could not save current game:', e);
+      }
     }
   }
 
@@ -161,10 +250,18 @@
         if (gamesLink) gamesLink.click();
       }
       if (e.key === '3') {
+        const emulatedLink = document.querySelector('.sidebar-link[data-page="emulated"]');
+        if (emulatedLink) emulatedLink.click();
+      }
+      if (e.key === '4') {
+        const searchLink = document.querySelector('.sidebar-link[data-page="search"]');
+        if (searchLink) searchLink.click();
+      }
+      if (e.key === '5') {
         const appsLink = document.querySelector('.sidebar-link[data-page="apps"]');
         if (appsLink) appsLink.click();
       }
-      if (e.key === '4') {
+      if (e.key === '6') {
         const settingsLink = document.querySelector('.sidebar-link[data-page="settings"]');
         if (settingsLink) settingsLink.click();
       }

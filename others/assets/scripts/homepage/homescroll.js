@@ -8,26 +8,25 @@
   let retryCount = 0;
   const MAX_RETRIES = 30;
 
-  // Initialize carousels when DOM is ready
+  // Initialize carousel when DOM is ready
   function initCarousels() {
     console.log(`🔄 InitCarousels called, retry: ${retryCount}/${MAX_RETRIES}`);
     
-    // Check if carousel tracks exist
-    const trackTop = document.getElementById('carousel-track-top');
-    const trackBottom = document.getElementById('carousel-track-bottom');
+    // Check if carousel track exists
+    const track = document.getElementById('carousel-track-top');
     
-    if (!trackTop || !trackBottom) {
-      console.warn('⚠️ Carousel tracks not found in DOM yet');
+    if (!track) {
+      console.warn('⚠️ Carousel track not found in DOM yet');
       if (retryCount < MAX_RETRIES) {
         retryCount++;
         setTimeout(initCarousels, 200);
         return;
       }
-      console.error('❌ Carousel tracks never appeared');
+      console.error('❌ Carousel track never appeared');
       return;
     }
 
-    console.log('✅ Carousel tracks found');
+    console.log('✅ Carousel track found');
 
     // Check for games data
     let gamesToUse = [];
@@ -56,47 +55,28 @@
       return;
     }
 
-    console.log('🎯 Loading carousels with', gamesToUse.length, 'games');
-    loadTopCarousel(gamesToUse);
-    loadBottomCarousel(gamesToUse);
+    console.log('🎯 Loading carousel with', gamesToUse.length, 'games');
+    loadCarousel(gamesToUse);
     gamesLoaded = true;
-    console.log('✅ Carousels loaded successfully');
+    console.log('✅ Carousel loaded successfully');
   }
 
-  // Load games into top carousel (left to right)
-  function loadTopCarousel(gamesToUse) {
-    const trackTop = document.getElementById('carousel-track-top');
-    if (!trackTop) return;
+  // Load games into carousel (right to left)
+  function loadCarousel(gamesToUse) {
+    const track = document.getElementById('carousel-track-top');
+    if (!track) return;
 
-    // Shuffle and take first 15 games
+    // Shuffle and take first 20 games for a fuller carousel
     const shuffled = [...gamesToUse].sort(() => Math.random() - 0.5);
-    const selected = shuffled.slice(0, Math.min(15, gamesToUse.length));
+    const selected = shuffled.slice(0, Math.min(20, gamesToUse.length));
     
     // Duplicate for seamless loop
     const duplicated = [...selected, ...selected];
 
-    trackTop.innerHTML = duplicated.map(game => createGameCard(game)).join('');
-    addClickHandlers(trackTop);
+    track.innerHTML = duplicated.map(game => createGameCard(game)).join('');
+    addClickHandlers(track);
     
-    console.log(`✅ Top carousel loaded with ${duplicated.length} cards`);
-  }
-
-  // Load games into bottom carousel (right to left)
-  function loadBottomCarousel(gamesToUse) {
-    const trackBottom = document.getElementById('carousel-track-bottom');
-    if (!trackBottom) return;
-
-    // Shuffle differently and take different games
-    const shuffled = [...gamesToUse].sort(() => Math.random() - 0.5);
-    const selected = shuffled.slice(0, Math.min(15, gamesToUse.length));
-    
-    // Duplicate for seamless loop
-    const duplicated = [...selected, ...selected];
-
-    trackBottom.innerHTML = duplicated.map(game => createGameCard(game)).join('');
-    addClickHandlers(trackBottom);
-    
-    console.log(`✅ Bottom carousel loaded with ${duplicated.length} cards`);
+    console.log(`✅ Carousel loaded with ${duplicated.length} cards`);
   }
 
   // Create a game card HTML
@@ -210,11 +190,10 @@
 
   // Expose reload function for external use
   window.reloadHomeCarousels = function() {
-    console.log('🔄 Reloading carousels...');
+    console.log('🔄 Reloading carousel...');
     if (typeof games !== 'undefined' && games && games.length > 0) {
       const gamesToUse = games.filter(game => game.name !== "Feedback");
-      loadTopCarousel(gamesToUse);
-      loadBottomCarousel(gamesToUse);
+      loadCarousel(gamesToUse);
     } else {
       initCarousels();
     }

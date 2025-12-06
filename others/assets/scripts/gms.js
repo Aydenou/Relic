@@ -8,8 +8,6 @@ const games = [
   // Numerals
   { name: "1 on 1 Soccer", image: "others/assets/games/images/1 on 1soccer.jpg", url: "others/assets/games/1 on 1soccer.html" },
   { name: "10 Bullets", image: "others/assets/games/images/10 bullets.png", url: "others/assets/games/10 bullets.html" },
-  { name: "1v1 Old", image: "others/assets/games/images/1v1lol.jpeg", url: "others/assets/games/1v1lol/index.html" },
-  { name: "1v1 Oldest", image: "others/assets/games/images/1v1lololdest.jpeg", url: "others/assets/games/1v1.lol_oldest.html" },
   { name: "2048", image: "others/assets/games/images/2048.jpg", url: "others/assets/games/2048.html" },
   { name: "60 Second Burger Run", image: "others/assets/games/images/60-seconds-burger-run.png", url: "others/assets/games/60burger run.html" },
   { name: "8 Ball Pool", image: "others/assets/games/images/8-ball-pool-2021-08-05.webp", url: "others/assets/games/8 Ball Pool.html" },

@@ -3,7 +3,7 @@
 (function() {
   'use strict';
 
-  console.log('📊 Loading Game Statistics System...');
+  console.log('Loading Game stats...');
 
   const GameStats = {
     initialized: false,
@@ -13,7 +13,7 @@
 
     init() {
       if (this.initialized) return;
-      console.log('🔧 Initializing Game Statistics System...');
+      console.log('Installing Game stats...');
       
       // Ensure storage structures exist
       if (!localStorage.getItem('gameStats')) {
@@ -27,7 +27,7 @@
       }
       
       this.initialized = true;
-      console.log('✅ Game Statistics System initialized');
+      console.log('✅ Game stats System installed');
       console.log('📈 Total games tracked:', Object.keys(this.getAllStats()).length);
       console.log('⭐ Favorites:', this.getFavorites().length);
     },
@@ -46,10 +46,10 @@
         'Shooter': []
       };
       localStorage.setItem('gameCategories', JSON.stringify(defaultCategories));
-      console.log('📁 Default categories initialized');
+      console.log('Catego set to default by user');
     },
 
-    // ===== GAME TRACKING =====
+    // Game tracking
     startTracking(gameUrl) {
       if (!gameUrl) {
         console.warn('⚠️ Cannot track game: No URL provided');
@@ -61,7 +61,7 @@
       this.currentGame = gameUrl;
       this.startTime = Date.now();
       
-      console.log('⏱️ Started tracking:', gameUrl);
+      console.log('Started tracking:', gameUrl);
       
       // Update play count
       const stats = this.getGameStats(gameUrl);
@@ -72,7 +72,7 @@
       }
       this.saveGameStats(gameUrl, stats);
       
-      console.log('🎮 Play count:', stats.playCount);
+      console.log('Play count:', stats.playCount);
       
       // Update time every second
       this.trackingInterval = setInterval(() => {

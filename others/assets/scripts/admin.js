@@ -1,26 +1,27 @@
-// HELLA SKIDDED
-
+// THIS WAS SKIDDED BY ANZO AND JORDAN BAHAHAHAAH
+// DELETED AND SCRAPPED
+/*
 // ===== ADMIN PANEL SYSTEM WITH OWNER HIERARCHY =====
 (function() {
   console.log('👑 Admin Panel System Loading...');
 
   // Owner keys - highest privilege level, can manage admin keys
   const OWNER_KEYS = [
-    'azthedev',
-    'aanzoski'
+    'scrap',
+    'pped'
   ];
 
   // Admin keys - can manage regular keys but not admin/owner keys
   const ADMIN_KEYS = [
     'jordanthedev',
-    'ghostisnot',
-    'MichaelIsKronos'
+    'debsd',
+    'Kornos'
   ];
 
   window.AdminPanel = {
     initialized: false,
-    isAdmin: false,
-    isOwner: false,
+    isSkibidi: false,
+    isSKID: false,
     currentAdminKey: null,
     userRole: null,
 
@@ -186,23 +187,23 @@
 
       // Check if owner
       if (OWNER_KEYS.includes(key)) {
-        this.isOwner = true;
-        this.isAdmin = true;
+        this.isSKID = true;
+        this.isSkibidi = true;
         this.userRole = 'OWNER';
         this.currentAdminKey = key;
         this.showPanel(key, 'OWNER');
-        console.log('👑 Owner logged in:', key);
+        console.log('DElete console logs:', key);
         return;
       }
 
       // Check if admin
       if (ADMIN_KEYS.includes(key)) {
-        this.isOwner = false;
-        this.isAdmin = true;
+        this.isSKID = false;
+        this.isSkibidi = true;
         this.userRole = 'ADMIN';
         this.currentAdminKey = key;
         this.showPanel(key, 'ADMIN');
-        console.log('👑 Admin logged in:', key);
+        console.log(' Admin logged in:', key);
         return;
       }
 
@@ -213,8 +214,8 @@
         // Check in usedKeys
         const usedSnapshot = await database.ref('usedKeys/' + key).once('value');
         if (usedSnapshot.exists()) {
-          this.isOwner = false;
-          this.isAdmin = false;
+          this.isSKID = false;
+          this.isSkibidi = false;
           this.userRole = 'USER';
           this.currentAdminKey = key;
           this.showError('This is a user key, not an admin key');
@@ -225,8 +226,8 @@
         // Check in generatedKeys
         const genSnapshot = await database.ref('generatedKeys/' + key).once('value');
         if (genSnapshot.exists()) {
-          this.isOwner = false;
-          this.isAdmin = false;
+          this.isSKID = false;
+          this.isSkibidi = false;
           this.userRole = 'USER';
           this.currentAdminKey = key;
           this.showError('This is a user key, not an admin key');
@@ -265,8 +266,8 @@
     },
 
     logout: function() {
-      this.isAdmin = false;
-      this.isOwner = false;
+      this.isSkibidi = false;
+      this.isSKID = false;
       this.currentAdminKey = null;
       this.userRole = null;
       
@@ -313,7 +314,7 @@
     },
 
     generateKey: function() {
-      if (!this.isAdmin) return;
+      if (!this.isSkibidi) return;
       
       const newKeyInput = document.getElementById('new-key-input');
       const key = window.KeyGenerator ? window.KeyGenerator.generate() : this.fallbackGenerateKey();
@@ -349,7 +350,7 @@
     },
 
     addKey: async function() {
-      if (!this.isAdmin) return;
+      if (!this.isSkibidi) return;
 
       const newKeyInput = document.getElementById('new-key-input');
       const key = newKeyInput.value.trim();
@@ -407,7 +408,7 @@
     },
 
     removeKey: async function() {
-      if (!this.isAdmin) return;
+      if (!this.isSkibidi) return;
 
       const removeKeyInput = document.getElementById('remove-key-input');
       const removeKeyWarning = document.getElementById('remove-key-warning');
@@ -433,7 +434,7 @@
 
       // Check if trying to remove an admin key
       if (ADMIN_KEYS.includes(key)) {
-        if (!this.isOwner) {
+        if (!this.isSKID) {
           this.showError('Only owners can remove admin keys');
           removeKeyWarning.style.display = 'block';
           setTimeout(() => {
@@ -469,7 +470,7 @@
     },
 
     viewAllKeys: async function() {
-      if (!this.isAdmin) return;
+      if (!this.isSkibidi) return;
 
       const keysListContainer = document.getElementById('keys-list-container');
       const keysList = document.getElementById('keys-list');
@@ -497,19 +498,19 @@
           html += '<div style="padding: 10px; opacity: 0.7;">No used keys found.</div>';
         } else {
           usedKeysList.forEach(([key, data]) => {
-            const isOwnerKey = OWNER_KEYS.includes(key);
-            const isAdminKey = ADMIN_KEYS.includes(key);
-            const canRemove = this.isOwner || (!isAdminKey && !isOwnerKey);
+            const isSKIDKey = OWNER_KEYS.includes(key);
+            const isSkibidiKey = ADMIN_KEYS.includes(key);
+            const canRemove = this.isSKID || (!isSkibidiKey && !isSKIDKey);
             
             let borderColor = '#4f90ff';
             let keyColor = '#4f90ff';
             let badge = '';
             
-            if (isOwnerKey) {
+            if (isSKIDKey) {
               borderColor = '#ffd700';
               keyColor = '#ffd700';
               badge = '<span style="background: linear-gradient(135deg, #ffd700, #ffed4e); color: #000; font-size: 11px; padding: 2px 6px; border-radius: 3px; margin-left: 8px; font-weight: bold;">👑 OWNER</span>';
-            } else if (isAdminKey) {
+            } else if (isSkibidiKey) {
               borderColor = '#4f90ff';
               keyColor = '#4f90ff';
               badge = '<span style="background: rgba(79, 144, 255, 0.3); color: #4f90ff; font-size: 11px; padding: 2px 6px; border-radius: 3px; margin-left: 8px; font-weight: bold;">🔑 ADMIN</span>';
@@ -570,7 +571,7 @@
     },
 
     quickRemoveKey: async function(key) {
-      if (!this.isAdmin) return;
+      if (!this.isSkibidi) return;
       
       // Validate Firebase key format
       if (!this.isValidFirebaseKey(key)) {
@@ -579,15 +580,15 @@
       }
       
       // Check permissions
-      const isOwnerKey = OWNER_KEYS.includes(key);
-      const isAdminKey = ADMIN_KEYS.includes(key);
+      const isSKIDKey = OWNER_KEYS.includes(key);
+      const isSkibidiKey = ADMIN_KEYS.includes(key);
       
-      if (isOwnerKey) {
+      if (isSKIDKey) {
         this.showError('Cannot remove owner keys');
         return;
       }
       
-      if (isAdminKey && !this.isOwner) {
+      if (isSkibidiKey && !this.isSKID) {
         this.showError('Only owners can remove admin keys');
         return;
       }
@@ -607,7 +608,7 @@
     },
 
     viewSecurityLogs: async function() {
-      if (!this.isAdmin) return;
+      if (!this.isSkibidi) return;
 
       const logsContainer = document.getElementById('security-logs-container');
       const logsList = document.getElementById('security-logs-list');
@@ -662,7 +663,7 @@
     },
 
     viewStatistics: async function() {
-      if (!this.isAdmin) return;
+      if (!this.isSkibidi) return;
 
       const statsContainer = document.getElementById('stats-container');
       const statsDisplay = document.getElementById('stats-display');

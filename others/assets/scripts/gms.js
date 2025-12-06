@@ -1,6 +1,5 @@
-// ===== GAMES, APPS, AND WEBSITES DATA =====
-// File: others/assets/scripts/gms.js
-// This file contains all game, app, and website definitions for GalaxyVerse
+// ===== GAMES, APPS, AND DATA =======
+// Files: public, gemes, 
 
 // ===== GAME DATA =====
 const games = [

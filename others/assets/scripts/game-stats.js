@@ -1,6 +1,4 @@
-// ===== GALAXYVERSE GAME STATISTICS & TRACKING SYSTEM =====
-// Version: 5.0.0
-// Path: others/assets/scripts/game-stats.js
+// Anzos a skid broski toski
 
 (function() {
   'use strict';

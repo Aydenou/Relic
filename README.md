@@ -7,6 +7,9 @@
 <h3 align="center"><a href="https://dsc.gg/relicoffical">Discord Server</a></h3>
 
 
+# DISCLAIMER:
+The new repository has been moved and is private, this is old version 1.2.4, the current version is 1.3.4
+
 # Info:
 This is only used for tests and will never get a full version update. New site is not open sourced.
 This will probably be the last change on this so thanks for the support on Relic Ultimate. Be sure
